@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PALABRAS/HOME</title>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="css/cubox/stylesheet.css">
+	<link rel="stylesheet" type="text/css" href="css/estilos.css">
+	<style type="text/css">
+		#score, #perfil {
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<header>
+		<div class="name text-center">PALABRAS</div>
+	</header>
+
+	<section id="menu" class="container">
+		<div class="well">
+			<a href="juego.html" class="btn btn-primary center-block">JUGAR</a>
+			<a href="#" class="btn btn-primary center-block" id="bt_perfil">PERFIL</a>
+			<a href="#" class="btn btn-primary center-block" id="bt_score">SCORE GLOBAL</a>
+			<a href="index.html" class="btn btn-primary center-block">SALIR</a>
+		</div>
+	</section>
+
+	<section id="score" class="container">
+		<div class="well">
+			<table class="table">
+				<tr id="table"><th>Puesto</th><th>Usuario</th><th>Numero de palabras</th></tr>
+			</table>
+			<a href="#" class="btn btn-primary center-block bt_atras" id="bt_atras">Atras</a>
+		</div>
+	</section>
+
+	<section id="perfil" class="container">
+		<div class="well">
+			<ul class="list-group" id="t_perfil">
+			</ul>
+			<a href="#" class="btn btn-primary center-block bt_atras" id="bt_atras">Atras</a>
+		</div>
+	</section>
+
+	<footer>
+		<p class="footer text-center">Aprende de una forma divertida jugando<p>
+	</footer>
+
+	<script src="js/jquery.js"></script>
+	<script>
+		$( document ).ready(function() {
+            console.log( "ready!" );
+            console.clear();
+
+
+            $("#bt_score").click(function(){
+            	$("#menu").css("display","none");
+            	$("#score").css("display","block");
+            });
+            $("#bt_perfil").click(function(){
+            	$("#menu").css("display","none");
+            	$("#perfil").css("display","block");
+            });
+            $(".bt_atras").click(function(){
+            	$("#menu").css("display","block");
+            	$("#score").css("display","none");
+            	$("#perfil").css("display","none");
+            });
+
+        	localStorage.np = 0;
+
+        	var obj = localStorage.getItem('sesion');
+        	console.log(JSON.parse(obj));
+        	obj= JSON.parse(obj);
+
+            var base_url = "http://localhost/palabras/backend/api/";
+
+        	$.ajax({
+                type: "GET",
+                url: base_url+"r_usuario",
+                dataType: "json",
+
+                success: function(result){
+                    //console.clear();
+                    console.log( "status: " + result.status );
+                    console.log( "data: " + result.data );
+                    console.log( "mensaje: " + result.message );
+
+                    if (result.data) {
+                    	var	puesto = result.data.length;
+	                    result.data.forEach(function(element) {
+	                    	$("#table").after("<tr><td>"+puesto+"</td><td>"+element.usuario+"</td><td>"+element.puntos+"</td></tr>");
+						    //console.log(element.usuario);
+						    if (element.id_usuario == obj.id_usuario) {
+						    	obj.puntos = element.puntos;
+						    }
+						    puesto--;
+						});
+						console.log( obj.puntos );
+			            $("#t_perfil").html("<li class='list-group-item active'>Nombre de Usuario<span class='badge'>"+obj.usuario+"</span></li>"+"<li class='list-group-item active'>Contrasena<span class='badge'>"+obj.contrasena+"</span></li>"+"<li class='list-group-item active'>Recor de palabras<span class='badge'>"+obj.puntos+"</span></li>");
+                    }   
+                }
+            });
+
+
+        });
+	</script>
+</body>
+</html>

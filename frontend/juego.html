@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PALABRAS</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="css/cubox/stylesheet.css">
+	<link rel="stylesheet" type="text/css" href="css/estilos.css">
+	<style>
+		.alert, #repetir {
+			display: none;
+		}
+		.alert-info {
+			display: block;
+		}
+	</style>
+</head>
+<body>
+	<header>
+		<div class="name text-center">PALABRAS</div>
+	</header>
+
+	<section id="juego" class="container">
+		<div class="well text-center">
+			<div class="well">
+				<div id="text" class="h1">__</div>
+				<div id="time" class="circle center-block h1">--</div>
+			</div>
+			<div class="well">
+				<p class="h4">Escribe la palabra</p>
+				<div class="input-group">
+					<input type="text" class="form-control text-center" name="" id="palabra">
+					<span class="input-group-btn">
+						<button class="btn btn-primary btn-lg" id="bt_comprobar" type="button"><span class="glyphicon glyphicon-ok"></span></button>
+					</span>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="alertas" class="">
+		<div class="alert alert-success center-block"><a href="#" class="close">x</a><strong>Felicidades!</strong> Has acertado. dale a siguiente </div>
+		<div class="alert alert-danger center-block"><a href="#" class="close">x</a><strong>Incorrepto!</strong> Te has equibocado</div>
+		<div class="alert alert-info center-block"><a href="#" class="close">x</a><strong>Informacio!</strong> despues de escribir la palabra hacer click en ( <span class="glyphicon glyphicon-ok"></span> )</div>
+	</section>
+
+	<a href="#" id="salir" class="btn btn-primary">Salir</a>
+	<a href="#" id="seguir" class="btn btn-primary">Siguiente</a>
+	<a href="juego.html" id="repetir" class="btn btn-primary">Reiniciar</a>
+
+	<footer>
+		<p class="footer text-center">Aprende de una forma divertida jugando<p>
+	</footer>
+
+	<script src="js/jquery.js"></script>
+	<script>
+		$(document).ready(function() {
+			console.clear();
+
+			var base_url = "http://localhost/palabras/backend/api/";
+
+			var pal = "";
+			var nex = false;
+
+
+
+			var obj = localStorage.getItem('sesion');
+            obj = JSON.parse(obj);
+			var id_usuario = obj.id_usuario;
+            console.log(id_usuario);
+            
+			//---------------crear-juego--------------------
+            function play() {
+            
+				$.ajax({
+	                type: "GET",
+	                url: base_url+"jugar/"+id_usuario,
+	                dataType: "json",
+
+	                success: function(result){
+	                    //console.clear();
+	                    console.log( "status: " + result.status );
+	                    console.log( "data: " + result.data );
+	                    console.log( "mensaje: " + result.message );
+	                    if (result.data) {
+
+	                    	$.ajax({
+				                type: "GET",
+				                url: base_url+"selec_palabra/"+result.data[0].id_palabra,
+				                dataType: "json",
+
+				                success: function(result){
+				                    //console.clear();
+				                    console.log( "status: " + result.status );
+				                    console.log( "data: " + result.data );
+				                    console.log( "mensaje: " + result.message );
+				                    if (result.data) {
+
+				                    	pal = result.data[0].palabra;
+				                    	$("#text").html(pal);
+
+				                    	console.log(result.data[0]);
+				                    }
+				                }
+				            });
+	                    }
+	                }
+	            });
+
+            }
+            play();
+			//----------------------------------------------
+
+			$("#bt_comprobar").click(function(){
+				$(".alert").css("display","none");
+				if(pal.toLowerCase() == $("#palabra").val().toLowerCase()){
+					clearInterval(interval);
+					$(".alert-success").css("display","block");
+					localStorage.np = Number(localStorage.np)+1;
+					nex = true;
+				}else {
+					$(".alert-danger").css("display","block");
+				}
+			});
+
+			//----------------nex----------------------
+			
+			$("#seguir").click(function(){
+				if (nex) {
+
+					pt = Number(localStorage.np);
+
+					$.ajax({
+		                type: "POST",
+		                url: base_url+"nex/"+id_usuario,
+		                dataType: "json",
+		                data: "pts="+pt,
+
+		                success: function(result){
+		                    console.clear();
+		                    console.log( "status: " + result.status );
+		                    console.log( "data: " + result.data );
+		                    console.log( "mensaje: " + result.message );
+		                    $(location).attr('href','juego.html');
+		                }
+		            });
+
+				}
+			});
+			
+			//--------------------------------------
+
+			$(".close").click(function(){
+            	$(".alert").css("display","none");
+            });
+
+            //-------------------fin de juego--------------
+            function fin() {
+            	var pt = Number(localStorage.np);
+            	$.ajax({
+	                type: "POST",
+	                url: base_url+"nex/"+id_usuario,
+	                dataType: "json",
+	                data: "pts="+pt,
+
+	                success: function(result){
+	                    console.clear();
+	                    console.log( "status: " + result.status );
+	                    console.log( "data: " + result.data );
+	                    console.log( "mensaje: " + result.message );
+	                }
+	            });
+
+	            $.ajax({
+	                type: "GET",
+	                url: base_url+"end/"+id_usuario,
+	                dataType: "json",
+
+	                success: function(result){
+	                    console.clear();
+	                    console.log( "status: " + result.status );
+	                    console.log( "data: " + result.data );
+	                    console.log( "mensaje: " + result.message );
+
+	                    console.log(result.data);
+	                }
+	            });
+            };
+
+			//--------------------------------------------
+
+			//-----------------onkey----------------------
+			$(document).keypress(function(e) {
+			    if(e.which == 13) {
+			        $(".alert").css("display","none");
+					if(pal.toLowerCase() == $("#palabra").val().toLowerCase()){
+						clearInterval(interval);
+						$(".alert-success").css("display","block");
+						localStorage.np = Number(localStorage.np)+1;
+						nex = true;
+					}else {
+						$(".alert-danger").css("display","block");
+					}
+			    } else if (e.which == 32) {
+			    	if (nex) {
+
+						localStorage.np = Number(localStorage.np)+1;
+						pt = Number(localStorage.np);
+
+						$.ajax({
+			                type: "POST",
+			                url: base_url+"nex/"+id_usuario,
+			                dataType: "json",
+			                data: "pts="+pt,
+
+			                success: function(result){
+			                    console.clear();
+			                    console.log( "status: " + result.status );
+			                    console.log( "data: " + result.data );
+			                    console.log( "mensaje: " + result.message );
+			                    $(location).attr('href','juego.html');
+			                }
+			            });
+
+					}
+			    }
+			});
+			//--------------------------------------------
+
+			$("#salir").click(function(){
+            	fin();
+            	$(location).attr('href','home.html');
+            });
+
+			var interval = null;
+			var	time = 10;
+			function tiempo() {
+				if (time > 0) {
+					time = time - 1;
+					$("#time").html(time);
+				} else {
+					clearInterval(interval);
+					$(".alert").css("display","none");
+					$(".alert-danger").css("display","block");
+					$("#repetir").css("display","block");
+					fin();
+					localStorage.np = 0;
+				}
+				
+			}
+
+			interval = setInterval(tiempo, 2000);
+
+		});
+	</script>
+</body>
+</html>

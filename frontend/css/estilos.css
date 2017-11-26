@@ -1,0 +1,81 @@
+* { margin: 0; padding: 0;	font-family: "comic sans MS"; }
+
+body {
+	background-color: #000;
+	background-image: url(../img/fondo2.png);
+	/*
+	background-size: 220px;
+	*/
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
+	background-attachment: fixed;
+}
+/*---------general------------*/
+header, .well, footer {
+	background-color: rgba( 252,252,252,0.15);
+	border: 1px solid #fff;
+	color: #fff;
+}
+.name {
+	font-family: 'Cubox-3D ST';
+	font-size: 70px;
+	margin: 8px;
+}
+.container {
+	max-width: 500px;
+	min-width:300px;
+	position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+}
+footer {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+}
+.footer {
+	margin: 10px;
+}
+.alert {
+	max-width: 600px;
+}
+/*--------------menu----------------*/
+#menu > div > a , #score > div > a{
+	font-family: 'School Book New';
+	font-size: 32px;
+	color: #fff;
+}
+/*--------------juego---------------*/
+#palabra {
+	height: 45px;
+	font-size: 25px;
+}
+#juego .well {
+	margin: 10px;
+	padding: 10px;
+}
+#juego .circle {
+	background-color: #337ab7;
+	padding: 10PX;
+	width: 58px;
+	border-radius: 50%;
+	margin-top: 5px;
+}
+#salir, #seguir, #repetir {
+	font-size: 30px;
+	position: absolute;
+	margin: 30px;
+	bottom: 40px;	
+}
+#seguir, #repetir {
+	right: 0;
+}
+#text, #time, #salir, #seguir, #repetir, #perfil ul li, .badge {
+	font-family: 'School Book New';
+}
+#perfil ul li, .badge {
+	font-size: 25px;
+}

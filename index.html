@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PALABRAS</title>
+	<link rel="stylesheet" type="text/css" href="frontend/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="frontend/css/cubox/stylesheet.css">
+	<link rel="stylesheet" type="text/css" href="frontend/css/estilos.css">
+    <style>
+        .alert {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+	<header>
+		<div class="name text-center">PALABRAS</div>
+	</header>
+
+	<section id="login" class="container">
+		<div class="well">
+			<form id="form_login">
+                <div class="form-group">
+                    <label>Usuario</label>
+                    <input class="form-control" type="text" id="Nusuario" name="usuario" placeholder="User name">
+                </div>
+                <div class="form-group">
+                    <label>Contrase&ntilde;a</label>
+                    <input class="form-control" type="password" id="contrasena" name="contrasena" placeholder="password">
+                </div>
+                <button class="btn btn-primary btn-lg center-block" type="button" id="bt_login">Entrar</button>
+            </form>
+            <br>
+            <p class="text-center"><a href="frontend/registro.html">no tengo una cuenta</a></p>
+		</div>
+	</section>
+
+    <section id="alertas" class="">
+        <div class="alert alert-danger center-block"><a href="#" class="close">x</a><strong>Incorrepto!</strong> Error en el usuario o contase&ntilde;a</div>
+    </section>
+
+	<footer>
+		<p class="footer text-center">Aprende de una forma divertida jugando<p>
+	</footer>
+
+	<script src="frontend/js/jquery.js"></script>
+	<script>
+		$( document ).ready(function() {
+            console.log( "ready!" );
+            console.clear();
+
+
+            localStorage.clear()
+
+            var base_url = "http://localhost/palabras/backend/api/";
+
+            $("#bt_login").click(function(){
+
+            	$.ajax({
+                    type: "POST",
+                    url: base_url+"logueo",
+                    dataType: "json",
+                    data: $( "#form_login" ).serialize(),
+                    success: function(result){
+                        console.clear();
+                        console.log( "status: " + result.status );
+                        console.log( "data: " + result.data );
+                        console.log( "mensaje: " + result.message );
+                        $("#form_login")[0].reset();
+
+                        if (result.data) {
+                        	localStorage.setItem('sesion', JSON.stringify(result.data[0]));
+                        	//var obj = localStorage.getItem('sesion');
+                        	//console.log(JSON.parse(obj));
+                        	$(location).attr('href','frontend/home.html');
+                        } else {
+                            $(".alert-danger").css("display","block");
+                        }
+                    },
+                });
+	    	});
+        });
+	</script>
+</body>
+</html>

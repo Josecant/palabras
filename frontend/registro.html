@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Registro</title>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="css/cubox/stylesheet.css">
+	<link rel="stylesheet" type="text/css" href="css/estilos.css">
+	<style type="text/css">
+		.alert {
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<header>
+		<div class="name text-center">PALABRAS</div>
+	</header>
+
+	<section id="login" class="container">
+		<div class="well">
+			<h2 class="text-center"><label>Reg&iacute;strate</label></h2>
+			<hr>
+			<form id="form_registro">
+                <div class="form-group">
+                    <label>Usuario</label>
+                    <input class="form-control" type="text" id="Nusuario" name="usuario" placeholder="User name">
+                </div>
+                <div class="form-group">
+                    <label>Contrase&ntilde;a</label>
+                    <input class="form-control" type="password" id="contrasena" name="contrasena" placeholder="password">
+                </div>
+                <div class="form-group">
+                    <label>Confirmar Contrase&ntilde;a</label>
+                    <input class="form-control" type="password" id="c_contrasena" name="c_contrasena" placeholder="password confirm">
+                </div>
+                <button class="btn btn-primary btn-lg center-block" type="button" id="bt_registar">Registrar</button>
+            </form>
+		</div>
+	</section>
+
+	<section id="alertas" class="text-center">
+		<div class="alert alert-success"><a href="index.html" class="close">x</a><strong>Felicidades!</strong> El registro fue exitoso</div>
+		<div class="alert alert-danger"><a href="#" class="close">x</a><strong>Error al registrase!</strong><span id="Error">_</span></div>
+	</section>
+
+	<footer>
+		<p class="footer text-center">Aprende de una forma divertida jugando<p>
+	</footer>
+	<script src="js/jquery.js"></script>
+	<script>
+		$( document ).ready(function() {
+            console.log( "ready!" );
+
+            $(".close").click(function(){
+            	$(".alert").css("display","none");
+            });
+
+            $("#bt_registar").click(function(event){
+            	//$(location).attr('href','home.html');
+            	var base_url = "http://localhost/palabras/backend/api/";
+
+            	if ( $("#contrasena").val() != $("#c_contrasena").val() ) {
+            		$("#Error").html(" No coninciden las contrase&ntilde;as");
+            		$(".alert-danger").css("display","block");
+            	}else{
+	            	$.ajax({
+	                    type: "POST",
+	                    //concatenamos la direccion del backend con la consulta que se quiere realizar
+	                    url: base_url+"r_usuario", //urlbase + consulta
+	                    //tipo de dato retornado
+	                    dataType: "json",
+	                    //formulario donde se encuentran los datos
+	                    data: $( "#form_registro" ).serialize() ,
+	                    //en caso de que se ejecute satisfactoriamente el en envio
+	                    success: function(result){
+	                        //limpiamos la consola y mostramos los datos como prueba de escritorio, esto no es necesario
+	                        console.clear();
+	                        console.log( "status: " + result.status );
+	                        console.log( "data: " + result.data );
+	                        console.log( "mensaje: " + result.message );
+	                        //limpiamos el formulario
+	                        $("#form_registro")[0].reset();
+	                        $(".alert-success").css("display","block");
+	                    },
+	                });
+	                //console.log($( "#form_registro" ).serialize());
+            	}
+
+	    	});
+        });
+	</script>
+</body>
+</html>
