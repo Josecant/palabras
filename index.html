@@ -51,7 +51,7 @@
 
             localStorage.clear()
 
-            var base_url = "palabras/backend/API/";
+            var base_url = "backend/API/";
 
             $("#bt_login").click(function(){
 
@@ -71,7 +71,7 @@
                         	localStorage.setItem('sesion', JSON.stringify(result.data[0]));
                         	//var obj = localStorage.getItem('sesion');
                         	//console.log(JSON.parse(obj));
-                        	$(location).attr('href','palabras/frontend/home.html');
+                        	$(location).attr('href','frontend/home.html');
                         } else {
                             $(".alert-danger").css("display","block");
                         }
